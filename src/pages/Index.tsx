@@ -1,52 +1,85 @@
 
 import { Header } from "@/components/Header";
 import { ElectionCard } from "@/components/ElectionCard";
+import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
-const MOCK_ELECTIONS = [
-  {
-    title: "Board of Directors Election 2024",
-    description: "Annual election for the Board of Directors positions. Cast your vote for the candidates who will lead our organization.",
-    date: "Mar 15, 2024",
-    participants: 256,
-    status: "active" as const,
-  },
-  {
-    title: "Budget Proposal Vote",
-    description: "Vote on the proposed budget allocation for the upcoming fiscal year. Your input matters in shaping our financial future.",
-    date: "Mar 20, 2024",
-    participants: 124,
-    status: "upcoming" as const,
-  },
-  {
-    title: "Committee Representatives",
-    description: "Selection of representatives for various committees. Help choose the right people for these important positions.",
-    date: "Feb 28, 2024",
-    participants: 189,
-    status: "ended" as const,
-  },
-];
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const Index = () => {
+  const [elections, setElections] = useState([]);
+
+  useEffect(() => {
+    const fetchElections = async () => {
+      const { data, error } = await supabase
+        .from("elections")
+        .select(`
+          *,
+          candidates (
+            id,
+            name
+          )
+        `)
+        .order("created_at", { ascending: false });
+
+      if (!error) {
+        setElections(data);
+      }
+    };
+
+    fetchElections();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel("elections")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "elections" },
+        () => {
+          fetchElections();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 pt-24 pb-12">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-8 animate-enter" style={{ "--delay": "0.1s" } as any}>
+          <div
+            className="mb-8 animate-enter"
+            style={{ "--delay": "0.1s" } as any}
+          >
             <h1 className="text-4xl font-bold mb-2">Welcome to VoteChain</h1>
             <p className="text-muted-foreground text-lg">
               Secure, transparent, and accessible voting platform
             </p>
           </div>
-          
+
           <div className="space-y-6">
-            {MOCK_ELECTIONS.map((election, index) => (
+            {elections.map((election: any, index: number) => (
               <div
-                key={election.title}
+                key={election.id}
                 className="animate-enter"
                 style={{ "--delay": `${(index + 1) * 0.1}s` } as any}
               >
-                <ElectionCard {...election} />
+                <ElectionCard
+                  id={election.id}
+                  title={election.title}
+                  description={election.description}
+                  date={new Date(election.start_date).toLocaleDateString()}
+                  participants={election.participant_count}
+                  status={election.status}
+                  candidates={election.candidates}
+                />
               </div>
             ))}
           </div>
