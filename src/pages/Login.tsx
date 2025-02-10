@@ -21,14 +21,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
+      <div className="text-center mb-8">
+        <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center mx-auto mb-4">
+          <span className="text-white font-semibold text-xl">V</span>
+        </div>
+        <h1 className="text-3xl font-bold">Welcome to VoteChain</h1>
+        <p className="text-muted-foreground mt-2">Secure and transparent voting platform</p>
+      </div>
+      
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>{isSignUp ? "Create Account" : "Login"}</CardTitle>
+          <CardTitle>{isSignUp ? "Create Account" : "Welcome Back"}</CardTitle>
           <CardDescription>
             {isSignUp
-              ? "Create a new account to start voting"
-              : "Login to access your account"}
+              ? "Create a new account to start participating in elections"
+              : "Sign in to access your voting dashboard"}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -40,9 +48,11 @@ export default function Login() {
               <Input
                 id="email"
                 type="email"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="w-full"
               />
             </div>
             <div className="space-y-2">
@@ -52,15 +62,17 @@ export default function Login() {
               <Input
                 id="password"
                 type="password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="w-full"
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full">
-              {isSignUp ? "Sign Up" : "Login"}
+              {isSignUp ? "Sign Up" : "Sign In"}
             </Button>
             <Button
               type="button"
@@ -69,7 +81,7 @@ export default function Login() {
               onClick={() => setIsSignUp(!isSignUp)}
             >
               {isSignUp
-                ? "Already have an account? Login"
+                ? "Already have an account? Sign In"
                 : "Don't have an account? Sign Up"}
             </Button>
           </CardFooter>
