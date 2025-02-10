@@ -2,12 +2,7 @@
 import { Header } from "@/components/Header";
 import { ElectionCard } from "@/components/ElectionCard";
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [elections, setElections] = useState([]);
