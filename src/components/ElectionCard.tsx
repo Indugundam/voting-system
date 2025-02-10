@@ -6,6 +6,8 @@ import { useVotes } from "@/hooks/useAuth";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 interface ElectionCardProps {
   title: string;
@@ -15,6 +17,11 @@ interface ElectionCardProps {
   status: "upcoming" | "active" | "ended";
   id: string;
   candidates?: Array<{ id: string; name: string }>;
+}
+
+interface VoteResult {
+  candidate_name: string;
+  vote_count: number;
 }
 
 export function ElectionCard({
@@ -27,8 +34,23 @@ export function ElectionCard({
   candidates = [],
 }: ElectionCardProps) {
   const [showVoteDialog, setShowVoteDialog] = useState(false);
+  const [showResultsDialog, setShowResultsDialog] = useState(false);
   const { castVote } = useVotes();
   const { user } = useAuth();
+
+  const { data: results } = useQuery({
+    queryKey: ['election-results', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('election_results')
+        .select('*')
+        .eq('election_id', id);
+      
+      if (error) throw error;
+      return data as VoteResult[];
+    },
+    enabled: status === 'ended'
+  });
 
   const handleVote = async (candidateId: string) => {
     if (!user) return;
@@ -72,12 +94,18 @@ export function ElectionCard({
           <Button
             className="w-full"
             variant={status === "active" ? "default" : "secondary"}
-            onClick={() => status === "active" && setShowVoteDialog(true)}
+            onClick={() => {
+              if (status === "active") {
+                setShowVoteDialog(true);
+              } else if (status === "ended") {
+                setShowResultsDialog(true);
+              }
+            }}
           >
             {status === "active"
               ? "Vote Now"
               : status === "upcoming"
-              ? "View Details"
+              ? "Coming Soon"
               : "View Results"}
           </Button>
         </CardFooter>
@@ -101,6 +129,25 @@ export function ElectionCard({
               >
                 {candidate.name}
               </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showResultsDialog} onOpenChange={setShowResultsDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Election Results</DialogTitle>
+            <DialogDescription>
+              Final results for {title}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            {results?.map((result, index) => (
+              <div key={index} className="flex justify-between items-center p-4 bg-muted rounded-lg">
+                <span className="font-medium">{result.candidate_name}</span>
+                <span className="text-muted-foreground">{result.vote_count} votes</span>
+              </div>
             ))}
           </div>
         </DialogContent>
