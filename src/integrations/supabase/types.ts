@@ -9,6 +9,65 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      candidates: {
+        Row: {
+          created_at: string | null
+          election_id: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          election_id: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          election_id?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidates_election_id_fkey"
+            columns: ["election_id"]
+            isOneToOne: false
+            referencedRelation: "elections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      elections: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          participant_count: number | null
+          start_date: string
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          participant_count?: number | null
+          start_date: string
+          status: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          participant_count?: number | null
+          start_date?: string
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
       restaurants: {
         Row: {
           created_at: string | null
@@ -44,6 +103,45 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      votes: {
+        Row: {
+          candidate_id: string
+          created_at: string | null
+          election_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string | null
+          election_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string | null
+          election_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "votes_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_election_id_fkey"
+            columns: ["election_id"]
+            isOneToOne: false
+            referencedRelation: "elections"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
