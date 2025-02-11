@@ -40,13 +40,14 @@ export function useAuth() {
       setUser(session?.user ?? null);
       if (session?.user) {
         await fetchProfile(session.user.id);
+        navigate('/dashboard');
       } else {
         setProfile(null);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -72,11 +73,12 @@ export function useAuth() {
       });
       
       if (error) {
+        toast.error(error.message);
         return { error };
       }
       
       toast.success('Signed in successfully');
-      navigate('/');
+      navigate('/dashboard');
       return { data };
     } catch (error: any) {
       console.error('Sign in error:', error);
