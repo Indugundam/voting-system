@@ -66,21 +66,27 @@ export function useAuth() {
 
   const signInWithEmail = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      if (error) throw error;
+      
+      if (error) {
+        return { error };
+      }
+      
       toast.success('Signed in successfully');
       navigate('/');
-    } catch (error) {
-      toast.error(error.message);
+      return { data };
+    } catch (error: any) {
+      console.error('Sign in error:', error);
+      return { error };
     }
   };
 
   const signUp = async (email: string, password: string, metadata?: SignUpMetadata) => {
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -91,15 +97,25 @@ export function useAuth() {
           },
         },
       });
-      if (error) throw error;
+      
+      if (error) {
+        return { error };
+      }
+      
       toast.success('Check your email to verify your account');
-    } catch (error) {
-      toast.error(error.message);
+      return { data };
+    } catch (error: any) {
+      console.error('Sign up error:', error);
+      return { error };
     }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error('Error signing out');
+      return;
+    }
     navigate('/login');
   };
 

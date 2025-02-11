@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { Loader2, LogIn } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function Login() {
   const [fullName, setFullName] = useState("");
   const [voterId, setVoterId] = useState("");
   const [role, setRole] = useState<"voter" | "admin">("voter");
+  const [isLoading, setIsLoading] = useState(false);
   const { signInWithEmail, signUp } = useAuth();
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -22,7 +24,18 @@ export default function Login() {
       toast.error('Please fill in all fields');
       return;
     }
-    await signInWithEmail(email, password);
+    
+    setIsLoading(true);
+    try {
+      const result = await signInWithEmail(email, password);
+      if (result?.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign in');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -31,7 +44,18 @@ export default function Login() {
       toast.error('Please fill in all fields');
       return;
     }
-    await signUp(email, password, { fullName, voterId, role });
+    
+    setIsLoading(true);
+    try {
+      const result = await signUp(email, password, { fullName, voterId, role });
+      if (result?.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign up');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -70,6 +94,7 @@ export default function Login() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
                     required
                   />
                 </div>
@@ -83,13 +108,24 @@ export default function Login() {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
                     required
                   />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type="submit" className="w-full">
-                  Sign In
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    <>
+                      <LogIn className="mr-2 h-4 w-4" />
+                      Sign In
+                    </>
+                  )}
                 </Button>
               </CardFooter>
             </form>
@@ -108,6 +144,7 @@ export default function Login() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
                     required
                   />
                 </div>
@@ -121,6 +158,7 @@ export default function Login() {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
                     required
                   />
                 </div>
@@ -134,6 +172,7 @@ export default function Login() {
                     placeholder="Enter your full name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
+                    disabled={isLoading}
                     required
                   />
                 </div>
@@ -147,6 +186,7 @@ export default function Login() {
                     placeholder="Enter your voter ID (e.g., VOT123456)"
                     value={voterId}
                     onChange={(e) => setVoterId(e.target.value)}
+                    disabled={isLoading}
                     required
                   />
                   <p className="text-sm text-muted-foreground">
@@ -157,7 +197,7 @@ export default function Login() {
                   <label htmlFor="role" className="text-sm font-medium">
                     Role
                   </label>
-                  <Select value={role} onValueChange={(value: "voter" | "admin") => setRole(value)}>
+                  <Select value={role} onValueChange={(value: "voter" | "admin") => setRole(value)} disabled={isLoading}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your role" />
                     </SelectTrigger>
@@ -169,8 +209,18 @@ export default function Login() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type="submit" className="w-full">
-                  Sign Up
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing up...
+                    </>
+                  ) : (
+                    <>
+                      <LogIn className="mr-2 h-4 w-4" />
+                      Sign Up
+                    </>
+                  )}
                 </Button>
               </CardFooter>
             </form>
