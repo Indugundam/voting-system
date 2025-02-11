@@ -15,6 +15,8 @@ interface Profile {
   full_name: string;
   voter_id: string | null;
   role: 'voter' | 'admin';
+  created_at: string;
+  updated_at: string;
 }
 
 export function useAuth() {
