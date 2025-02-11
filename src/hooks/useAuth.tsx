@@ -14,7 +14,7 @@ interface Profile {
   id: string;
   full_name: string;
   voter_id: string | null;
-  role: 'voter' | 'admin';
+  role: 'voter' | 'admin' | 'candidate';
   created_at: string;
   updated_at: string;
 }
