@@ -144,11 +144,14 @@ export default function Login() {
                   <Input
                     id="voter-id"
                     type="text"
-                    placeholder="Enter your voter ID"
+                    placeholder="Enter your voter ID (e.g., VOT123456)"
                     value={voterId}
                     onChange={(e) => setVoterId(e.target.value)}
                     required
                   />
+                  <p className="text-sm text-muted-foreground">
+                    For testing, you can use any alphanumeric string (e.g., VOT123456)
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="role" className="text-sm font-medium">
