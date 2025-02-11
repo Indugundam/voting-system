@@ -4,6 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from "@/integrations/supabase/client";
 
+interface SignUpMetadata {
+  fullName: string;
+  voterId?: string;
+}
+
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,11 +43,17 @@ export function useAuth() {
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, metadata?: SignUpMetadata) => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            full_name: metadata?.fullName,
+            voter_id: metadata?.voterId,
+          },
+        },
       });
       if (error) throw error;
       toast.success('Check your email to verify your account');

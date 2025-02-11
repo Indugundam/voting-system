@@ -68,6 +68,33 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+          voter_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          full_name: string
+          id: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          voter_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          voter_id?: string | null
+        }
+        Relationships: []
+      }
       restaurants: {
         Row: {
           created_at: string | null
@@ -169,7 +196,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "admin" | "candidate" | "voter"
     }
     CompositeTypes: {
       [_ in never]: never
