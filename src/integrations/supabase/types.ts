@@ -38,6 +38,27 @@ export type Database = {
           },
         ]
       }
+      election_data: {
+        Row: {
+          candidate_name: string
+          election_date: string
+          id: number
+          votes: number
+        }
+        Insert: {
+          candidate_name: string
+          election_date: string
+          id?: never
+          votes: number
+        }
+        Update: {
+          candidate_name?: string
+          election_date?: string
+          id?: never
+          votes?: number
+        }
+        Relationships: []
+      }
       elections: {
         Row: {
           created_at: string | null
@@ -95,6 +116,38 @@ export type Database = {
         }
         Relationships: []
       }
+      purchased_tickets: {
+        Row: {
+          id: string
+          purchase_date: string | null
+          ticket_id: string
+          ticket_number: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          purchase_date?: string | null
+          ticket_id: string
+          ticket_number: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          purchase_date?: string | null
+          ticket_id?: string
+          ticket_number?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchased_tickets_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       restaurants: {
         Row: {
           created_at: string | null
@@ -128,6 +181,33 @@ export type Database = {
           price_range?: number | null
           rating?: number | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      tickets: {
+        Row: {
+          created_at: string | null
+          draw_time: string
+          id: string
+          name: string
+          price: number
+          tickets_left: number
+        }
+        Insert: {
+          created_at?: string | null
+          draw_time: string
+          id?: string
+          name: string
+          price: number
+          tickets_left?: number
+        }
+        Update: {
+          created_at?: string | null
+          draw_time?: string
+          id?: string
+          name?: string
+          price?: number
+          tickets_left?: number
         }
         Relationships: []
       }
@@ -175,21 +255,30 @@ export type Database = {
       election_results: {
         Row: {
           candidate_name: string | null
-          election_id: string | null
-          vote_count: number | null
+          election_date: string | null
+          id: number | null
+          votes: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "votes_election_id_fkey"
-            columns: ["election_id"]
-            isOneToOne: false
-            referencedRelation: "elections"
-            referencedColumns: ["id"]
-          },
-        ]
+        Insert: {
+          candidate_name?: string | null
+          election_date?: string | null
+          id?: number | null
+          votes?: number | null
+        }
+        Update: {
+          candidate_name?: string | null
+          election_date?: string | null
+          id?: number | null
+          votes?: number | null
+        }
+        Relationships: []
       }
     }
     Functions: {
+      generate_ticket_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       update_election_status: {
         Args: Record<PropertyKey, never>
         Returns: undefined
