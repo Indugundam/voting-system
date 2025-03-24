@@ -1,5 +1,5 @@
 
-# VoteChain Simplicity Voting System
+# Voting System
 
 A secure, real-time voting application with user authentication, role-based access control, and a responsive dashboard displaying live election data and results.
 
