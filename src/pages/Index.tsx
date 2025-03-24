@@ -4,8 +4,18 @@ import { ElectionCard } from "@/components/ElectionCard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+interface Election {
+  id: string;
+  title: string;
+  description: string;
+  start_date: string;
+  participant_count: number;
+  status: 'upcoming' | 'active' | 'ended';
+  candidates: Array<{ id: string; name: string }>;
+}
+
 const Index = () => {
-  const [elections, setElections] = useState([]);
+  const [elections, setElections] = useState<Election[]>([]);
 
   useEffect(() => {
     const fetchElections = async () => {
@@ -20,8 +30,14 @@ const Index = () => {
         `)
         .order("created_at", { ascending: false });
 
-      if (!error) {
-        setElections(data);
+      if (!error && data) {
+        // Ensure the data matches the Election interface
+        const typedElections = data.map(election => ({
+          ...election,
+          status: election.status as 'upcoming' | 'active' | 'ended'
+        })) as Election[];
+        
+        setElections(typedElections);
       }
     };
 
@@ -60,7 +76,7 @@ const Index = () => {
           </div>
 
           <div className="space-y-6">
-            {elections.map((election: any, index: number) => (
+            {elections.map((election: Election, index: number) => (
               <div
                 key={election.id}
                 className="animate-enter"

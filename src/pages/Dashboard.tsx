@@ -36,7 +36,13 @@ const Dashboard = () => {
         .order("created_at", { ascending: false });
 
       if (!error && data) {
-        setElections(data);
+        // Ensure the data matches the Election interface
+        const typedElections = data.map(election => ({
+          ...election,
+          status: election.status as 'upcoming' | 'active' | 'ended'
+        })) as Election[];
+        
+        setElections(typedElections);
       }
       setElectionLoading(false);
     };

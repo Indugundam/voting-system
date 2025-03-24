@@ -47,7 +47,12 @@ export function ElectionCard({
         .eq('election_id', id);
       
       if (error) throw error;
-      return data as VoteResult[];
+      
+      // Transform the data to match VoteResult interface
+      return (data || []).map((item: any) => ({
+        candidate_name: item.candidate_name,
+        vote_count: item.votes || 0
+      })) as VoteResult[];
     },
     enabled: status === 'ended'
   });
@@ -149,6 +154,9 @@ export function ElectionCard({
                 <span className="text-muted-foreground">{result.vote_count} votes</span>
               </div>
             ))}
+            {!results || results.length === 0 && (
+              <p className="text-center text-muted-foreground py-4">No results available</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>

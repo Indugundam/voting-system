@@ -22,7 +22,6 @@ This project is built with:
 - Vite
 - TypeScript
 - React
-- shadcn-ui
 - Tailwind CSS
 - Supabase for backend functionality
 
@@ -52,9 +51,7 @@ You can edit the code using:
 
 - Your preferred IDE
 - GitHub's file editor
-- GitHub Codespaces
 
 ## Deployment
 
 You can deploy this project to any static hosting service like Vercel, Netlify, or GitHub Pages.
-
