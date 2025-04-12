@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -17,22 +16,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-primary/5">
-      <div className="container mx-auto px-4 py-20 flex flex-col items-center">
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center mx-auto mb-6">
-            <span className="text-white font-bold text-4xl">V</span>
+      <div className="container mx-auto px-4 py-12 flex flex-col items-center">
+        <div className="text-center mb-8 animate-fade-in">
+          <div className="w-20 h-20 rounded-full bg-primary/80 flex items-center justify-center mx-auto mb-4">
+            <span className="text-white font-semibold text-3xl">V</span>
           </div>
-          <h1 className="text-5xl font-bold mb-4">Votely</h1>
-          <p className="text-xl text-muted-foreground italic">
+          <h1 className="text-4xl font-semibold mb-3 text-gray-800">Votely</h1>
+          <p className="text-lg text-muted-foreground italic">
             "Your Voice. Your Vote. Your Way."
           </p>
         </div>
 
-        <div className="max-w-3xl text-center mb-12">
-          <h2 className="text-3xl font-semibold mb-4">
+        <div className="max-w-3xl text-center mb-10">
+          <h2 className="text-2xl font-medium mb-4 text-gray-700">
             Secure, Transparent and Democratic Voting Platform
           </h2>
-          <p className="text-lg text-muted-foreground mb-8">
+          <p className="text-base text-muted-foreground mb-6">
             Votely is designed to make voting accessible and transparent for everyone.
             Our platform ensures that every vote is counted and results are displayed
             in real-time. Join us in making democracy work better.
@@ -41,7 +40,8 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              className="text-lg px-8 py-6"
+              variant="default"
+              className="text-base px-6 py-4"
               onClick={() => navigate("/login")}
             >
               Log In
@@ -49,7 +49,7 @@ export default function Home() {
             <Button 
               size="lg" 
               variant="outline"
-              className="text-lg px-8 py-6"
+              className="text-base px-6 py-4"
               onClick={() => navigate("/login?tab=signup")}
             >
               Sign Up

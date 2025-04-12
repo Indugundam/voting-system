@@ -98,13 +98,9 @@ export default function Login() {
             <form onSubmit={handleSignIn}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="signin-email" className="text-sm font-medium">
-                    Email
-                  </label>
                   <Input
-                    id="signin-email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
@@ -112,13 +108,9 @@ export default function Login() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="signin-password" className="text-sm font-medium">
-                    Password
-                  </label>
                   <Input
-                    id="signin-password"
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
@@ -148,13 +140,9 @@ export default function Login() {
             <form onSubmit={handleSignUp}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="signup-email" className="text-sm font-medium">
-                    Email
-                  </label>
                   <Input
-                    id="signup-email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
@@ -162,13 +150,9 @@ export default function Login() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="signup-password" className="text-sm font-medium">
-                    Password
-                  </label>
                   <Input
-                    id="signup-password"
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
@@ -176,13 +160,9 @@ export default function Login() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="full-name" className="text-sm font-medium">
-                    Full Name
-                  </label>
                   <Input
-                    id="full-name"
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder="Full Name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     disabled={isLoading}
@@ -190,29 +170,19 @@ export default function Login() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="voter-id" className="text-sm font-medium">
-                    Voter ID
-                  </label>
                   <Input
-                    id="voter-id"
                     type="text"
-                    placeholder="Enter your voter ID (e.g., VOT123456)"
+                    placeholder="Voter ID (e.g., VOT123456)"
                     value={voterId}
                     onChange={(e) => setVoterId(e.target.value)}
                     disabled={isLoading}
                     required
                   />
-                  <p className="text-sm text-muted-foreground">
-                    For testing, you can use any alphanumeric string (e.g., VOT123456)
-                  </p>
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="role" className="text-sm font-medium">
-                    Role
-                  </label>
                   <Select value={role} onValueChange={(value: "voter" | "admin") => setRole(value)} disabled={isLoading}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select your role" />
+                      <SelectValue placeholder="Select Role" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="voter">Voter</SelectItem>
@@ -251,3 +221,4 @@ export default function Login() {
     </div>
   );
 }
+
