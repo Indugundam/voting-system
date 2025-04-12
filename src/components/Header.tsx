@@ -2,6 +2,7 @@
 import { Bell, LogOut, Menu, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,17 +20,20 @@ export function Header() {
           <Button variant="ghost" size="icon" className="lg:hidden">
             <Menu className="h-5 w-5" />
           </Button>
-          <a href="/" className="flex items-center space-x-2">
+          <Link to="/dashboard" className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
               <span className="text-white font-semibold">V</span>
             </div>
             <span className="font-semibold text-xl hidden sm:inline-block">
-              VoteChain
+              Votely
             </span>
-          </a>
+          </Link>
         </div>
 
         <div className="flex items-center space-x-4">
+          <Link to="/elections">
+            <Button variant="ghost">Elections</Button>
+          </Link>
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
             <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full" />

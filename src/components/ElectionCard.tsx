@@ -52,7 +52,7 @@ export function ElectionCard({
       return (data || []).map((item: any) => ({
         candidate_name: item.candidate_name,
         vote_count: item.votes || 0
-      })) as VoteResult[];
+      }));
     },
     enabled: status === 'ended'
   });
@@ -154,7 +154,7 @@ export function ElectionCard({
                 <span className="text-muted-foreground">{result.vote_count} votes</span>
               </div>
             ))}
-            {!results || results.length === 0 && (
+            {(!results || results.length === 0) && (
               <p className="text-center text-muted-foreground py-4">No results available</p>
             )}
           </div>
