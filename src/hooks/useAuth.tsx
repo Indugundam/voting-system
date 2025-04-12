@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -68,24 +67,38 @@ const addDemoElectionsIfNeeded = async () => {
     const { data: elections } = await supabase.from('elections').select('id');
     
     if (elections && elections.length > 0) {
+      const candidateImages = [
+        'https://images.unsplash.com/photo-1560250097-0b93528c311a', // Professional man
+        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2', // Professional woman
+        'https://images.unsplash.com/photo-1556157382-97eda2f9e2bf', // Another professional man
+        'https://images.unsplash.com/photo-1580489944761-15a19d654956', // Another professional woman
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d', // Young professional man
+        'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91', // Mature woman
+        'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce', // Middle-aged man
+        'https://images.unsplash.com/photo-1517841905240-472988babdf9', // Young woman
+      ];
+      
+      // Shuffle the images 
+      const shuffledImages = [...candidateImages].sort(() => 0.5 - Math.random());
+      
       const candidates = [
-        { name: 'Alex Johnson', election_id: elections[0].id },
-        { name: 'Maria Garcia', election_id: elections[0].id },
-        { name: 'David Lee', election_id: elections[0].id },
-        { name: 'Sarah Miller', election_id: elections[1].id },
-        { name: 'James Wilson', election_id: elections[1].id },
-        { name: 'Emma Brown', election_id: elections[2].id },
-        { name: 'Robert Taylor', election_id: elections[2].id },
-        { name: 'Jennifer Davis', election_id: elections[2].id },
+        { name: 'Alex Johnson', election_id: elections[0].id, image_url: shuffledImages[0] },
+        { name: 'Maria Garcia', election_id: elections[0].id, image_url: shuffledImages[1] },
+        { name: 'David Lee', election_id: elections[0].id, image_url: shuffledImages[2] },
+        { name: 'Sarah Miller', election_id: elections[1].id, image_url: shuffledImages[3] },
+        { name: 'James Wilson', election_id: elections[1].id, image_url: shuffledImages[4] },
+        { name: 'Emma Brown', election_id: elections[2].id, image_url: shuffledImages[5] },
+        { name: 'Robert Taylor', election_id: elections[2].id, image_url: shuffledImages[6] },
+        { name: 'Jennifer Davis', election_id: elections[2].id, image_url: shuffledImages[7] },
       ];
       
       await supabase.from('candidates').insert(candidates);
       
       // Add some results for the ended election
       const results = [
-        { election_id: elections[2].id, candidate_name: 'Emma Brown', votes: 87 },
-        { election_id: elections[2].id, candidate_name: 'Robert Taylor', votes: 65 },
-        { election_id: elections[2].id, candidate_name: 'Jennifer Davis', votes: 51 },
+        { election_id: elections[2].id, candidate_name: 'Emma Brown', votes: 87, image_url: shuffledImages[5] },
+        { election_id: elections[2].id, candidate_name: 'Robert Taylor', votes: 65, image_url: shuffledImages[6] },
+        { election_id: elections[2].id, candidate_name: 'Jennifer Davis', votes: 51, image_url: shuffledImages[7] },
       ];
       
       await supabase.from('election_results').insert(results);
@@ -109,8 +122,7 @@ const updateElectionStatuses = async () => {
     .from('elections')
     .update({ status: 'active' })
     .eq('status', 'upcoming')
-    .lte('start_date', now)
-    .gt('end_date', now);
+    .lte('start_date', now);
     
   // Check if any elections are ending today and generate results
   const { data: endingElections } = await supabase
@@ -124,7 +136,7 @@ const updateElectionStatuses = async () => {
       // Get candidates for this election
       const { data: candidates } = await supabase
         .from('candidates')
-        .select('id, name')
+        .select('id, name, image_url')
         .eq('election_id', election.id);
       
       if (candidates && candidates.length > 0) {
@@ -139,6 +151,7 @@ const updateElectionStatuses = async () => {
           const results = candidates.map(candidate => ({
             election_id: election.id,
             candidate_name: candidate.name,
+            image_url: candidate.image_url,
             votes: Math.floor(Math.random() * 100) + 20, // Random number between 20 and 119
           }));
           
@@ -192,14 +205,27 @@ const updateElectionStatuses = async () => {
         'Richard Taylor'
       ];
       
+      const candidateImages = [
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e',
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
+        'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6',
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb',
+        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d',
+        'https://images.unsplash.com/photo-1544005313-94ddf0286df2',
+        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d',
+        'https://images.unsplash.com/photo-1552058544-f2b08422138a'
+      ];
+      
       // Select 2-4 random candidates
       const numCandidates = Math.floor(Math.random() * 3) + 2; // 2-4 candidates
       const shuffled = [...candidateNames].sort(() => 0.5 - Math.random());
       const selectedCandidates = shuffled.slice(0, numCandidates);
+      const shuffledImages = [...candidateImages].sort(() => 0.5 - Math.random());
       
-      const candidates = selectedCandidates.map(name => ({
+      const candidates = selectedCandidates.map((name, index) => ({
         name,
-        election_id: insertedElection[0].id
+        election_id: insertedElection[0].id,
+        image_url: shuffledImages[index]
       }));
       
       await supabase.from('candidates').insert(candidates);
@@ -347,7 +373,7 @@ export function useVotes() {
     try {
       const { data, error } = await supabase
         .from('votes')
-        .select('candidate_id, candidates(name)')
+        .select('candidate_id, candidates(name, image_url)')
         .eq('election_id', electionId);
       
       if (error) throw error;
@@ -359,4 +385,78 @@ export function useVotes() {
   };
 
   return { castVote, getResults };
+}
+
+export function useNotifications() {
+  const [notifications, setNotifications] = useState<{ id: string; title: string; message: string; isRead: boolean }[]>([]);
+  
+  useEffect(() => {
+    // Generate some initial notifications about active elections
+    const fetchActiveElections = async () => {
+      const { data } = await supabase
+        .from('elections')
+        .select('id, title')
+        .eq('status', 'active');
+        
+      if (data && data.length > 0) {
+        const electionNotifications = data.map((election, index) => ({
+          id: `notification-${index}`,
+          title: 'Active Election',
+          message: `"${election.title}" is now open for voting! Cast your vote now.`,
+          isRead: false
+        }));
+        
+        setNotifications(electionNotifications);
+      }
+    };
+    
+    fetchActiveElections();
+    
+    // Listen for changes in elections status
+    const channel = supabase
+      .channel('election-status-changes')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'elections', filter: 'status=eq.active' },
+        (payload) => {
+          const newElection = payload.new as any;
+          setNotifications(prev => [
+            {
+              id: `notification-${Date.now()}`,
+              title: 'New Active Election',
+              message: `"${newElection.title}" is now open for voting!`,
+              isRead: false
+            },
+            ...prev
+          ]);
+        }
+      )
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+  
+  const markAsRead = (id: string) => {
+    setNotifications(prev => 
+      prev.map(notification => 
+        notification.id === id 
+          ? { ...notification, isRead: true } 
+          : notification
+      )
+    );
+  };
+  
+  const markAllAsRead = () => {
+    setNotifications(prev => 
+      prev.map(notification => ({ ...notification, isRead: true }))
+    );
+  };
+  
+  const getUnreadCount = () => {
+    return notifications.filter(n => !n.isRead).length;
+  };
+  
+  return { notifications, markAsRead, markAllAsRead, getUnreadCount };
 }
